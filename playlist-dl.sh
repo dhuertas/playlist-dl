@@ -54,7 +54,7 @@ cat playlist.out | while read line; do
 
 	echo $IN
 
-	OUT=`echo "$IN" |sed 's/mp4/mp3/'`
+	OUT=`echo "$IN" |sed -E 's/\.[0-9a-z]{1,5}$/.mp3/'`
 
 	# Download video file
 	youtube-dl -o "%(title)s.%(ext)s" "$URL" >log_youtube-dl.log
@@ -62,9 +62,10 @@ cat playlist.out | while read line; do
 	# Convert video file to mp3 audio
 	ffmpeg -i "$IN" -f mp3 -ab 256000 -vn "$OUT" -v quiet >log_ffmpeg.log &
 
+	# To display the output of each command use
+	# tail -f log_youtube-dl.log log_ffmpeg.log
 done
 
 # Clean folder
-rm *.mp4
 rm curl.out
 rm playlist.out
